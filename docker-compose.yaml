@@ -1,0 +1,51 @@
+services:
+  marzban-node:
+    # build: .
+    image: gozargah/marzban-node:v0.4.1
+    restart: always
+    networks:
+      - node_network
+    container_name: "m_node"
+    env_file: .env
+    ports:
+      - "62050:62050"
+      - "62051:62051"
+      - "127.0.0.1:${PORT}:${PORT}"
+    environment:
+      SSL_CERT_FILE: "/var/lib/marzban-node/ssl_cert.pem"
+      SSL_KEY_FILE: "/var/lib/marzban-node/ssl_key.pem"
+      SSL_CLIENT_CERT_FILE: "/var/lib/marzban-node/ssl_client_cert.pem"
+      XRAY_EXECUTABLE_PATH: "/var/lib/marzban/xray-core/xray"
+      SERVICE_PROTOCOL: "rest"
+    volumes:
+      - /var/lib/marzban-node:/var/lib/marzban-node
+      - /var/lib/marzban:/var/lib/marzban
+  nginx:
+    container_name: nginx_global
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - new_cvb
+    restart: always
+    environment:
+      DOMAIN: ${DOMAIN}
+      LOCATION: ${SERVER_URL}
+      CERT_FULLCHAIN_PATH: ${CERT_FULLCHAIN_PATH}
+      CERT_KEY_PATH: ${CERT_KEY_PATH}
+    volumes:
+      - ./etc/nginx/templates:/etc/nginx/templates:ro
+      - ./etc/nginx/conf:/etc/nginx/conf.d
+      - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ${CERT_KEY_PATH}:${CERT_KEY_PATH}
+      - ${CERT_FULLCHAIN_PATH}:${CERT_FULLCHAIN_PATH}
+      - ./var/log/nginx:/var/log/nginx
+      - ./var/www/html:/var/www/html
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - mysql
+networks:
+  node_network:
+    driver: bridge
