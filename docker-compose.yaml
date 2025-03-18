@@ -40,8 +40,6 @@ services:
       - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ${CERT_KEY_PATH}:${CERT_KEY_PATH}
       - ${CERT_FULLCHAIN_PATH}:${CERT_FULLCHAIN_PATH}
-      - ./var/log/nginx:/var/log/nginx
-      - ./var/www/html:/var/www/html
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:
