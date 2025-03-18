@@ -10,7 +10,6 @@ services:
     ports:
       - "62050:62050"
       - "62051:62051"
-      - "127.0.0.1:${PORT}:${PORT}"
     environment:
       SSL_CERT_FILE: "/var/lib/marzban-node/ssl_cert.pem"
       SSL_KEY_FILE: "/var/lib/marzban-node/ssl_key.pem"
