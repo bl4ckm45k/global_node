@@ -31,9 +31,8 @@ services:
     restart: always
     environment:
       DOMAIN: ${DOMAIN}
-      LOCATION: ${SERVER_URL}
-      CERT_FULLCHAIN_PATH: ${CERT_FULLCHAIN_PATH}
-      CERT_KEY_PATH: ${CERT_KEY_PATH}
+      # CERT_FULLCHAIN_PATH: ${CERT_FULLCHAIN_PATH}
+      # CERT_KEY_PATH: ${CERT_KEY_PATH}
     volumes:
       # - ./etc/nginx/templates:/etc/nginx/templates:ro
       - ./etc/nginx/conf:/etc/nginx/conf.d
@@ -43,7 +42,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:
-      - mysql
+      - marzban-node
 networks:
   node_network:
     driver: bridge
