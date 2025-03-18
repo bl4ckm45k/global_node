@@ -29,8 +29,8 @@ services:
     networks:
       - new_cvb
     restart: always
-    environment:
-      DOMAIN: ${DOMAIN}
+    # environment:
+      # DOMAIN: ${DOMAIN}
       # CERT_FULLCHAIN_PATH: ${CERT_FULLCHAIN_PATH}
       # CERT_KEY_PATH: ${CERT_KEY_PATH}
     volumes:
