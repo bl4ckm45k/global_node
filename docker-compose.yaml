@@ -20,7 +20,7 @@ services:
       - /var/lib/marzban-node:/var/lib/marzban-node
       # - /var/lib/marzban:/var/lib/marzban
   nginx:
-    container_name: nginx_global
+    container_name: nginx
     image: nginx:1.25-alpine
     ports:
       - "80:80"
