@@ -10,7 +10,6 @@ services:
     ports:
       - "62050:62050"
       - "62051:62051"
-      - "2083:2083"
     environment:
       SSL_CERT_FILE: "/var/lib/marzban-node/ssl_cert.pem"
       SSL_KEY_FILE: "/var/lib/marzban-node/ssl_key.pem"
@@ -19,7 +18,7 @@ services:
       SERVICE_PROTOCOL: "rest"
     volumes:
       - /var/lib/marzban-node:/var/lib/marzban-node
-      - /var/lib/marzban:/var/lib/marzban
+      # - /var/lib/marzban:/var/lib/marzban
   nginx:
     container_name: nginx_global
     image: nginx:1.25-alpine
