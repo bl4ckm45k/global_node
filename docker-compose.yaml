@@ -19,6 +19,11 @@ services:
     volumes:
       - /var/lib/marzban-node:/var/lib/marzban-node
       # - /var/lib/marzban:/var/lib/marzban
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "900k"
+        max-file: "5"
   nginx:
     container_name: nginx
     image: nginx:1.25-alpine
@@ -43,6 +48,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
     depends_on:
       - marzban-node
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "900k"
+        max-file: "5"
 networks:
   node_network:
     driver: bridge
