@@ -1,29 +1,16 @@
 services:
-  marzban-node:
-    # build: .
-    image: gozargah/marzban-node:v0.4.1
-    restart: always
+  remnanode:
+    container_name: remnanode
+    hostname: remnanode
+    image: remnawave/node:latest
     networks:
       - node_network
-    container_name: "m_node"
-    env_file: .env
     ports:
-      - "62050:62050"
-      - "62051:62051"
+      - "2222:2222"
+    restart: always
     environment:
-      SSL_CERT_FILE: "/var/lib/marzban-node/ssl_cert.pem"
-      SSL_KEY_FILE: "/var/lib/marzban-node/ssl_key.pem"
-      SSL_CLIENT_CERT_FILE: "/var/lib/marzban-node/ssl_client_cert.pem"
-      # XRAY_EXECUTABLE_PATH: "/var/lib/marzban/xray-core/xray"
-      SERVICE_PROTOCOL: "rest"
-    volumes:
-      - /var/lib/marzban-node:/var/lib/marzban-node
-      # - /var/lib/marzban:/var/lib/marzban
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "900k"
-        max-file: "5"
+      NODE_PORT: "2222"
+      SECRET_KEY: ${SECRET_KEY}
   nginx:
     container_name: nginx
     image: nginx:1.25-alpine
@@ -47,12 +34,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:
-      - marzban-node
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "900k"
-        max-file: "5"
+      - remnanode
 networks:
   node_network:
     driver: bridge
