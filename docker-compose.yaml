@@ -4,37 +4,58 @@ services:
     hostname: remnanode
     image: remnawave/node:latest
     networks:
-      - node_network
+      - remnawave-network
     ports:
       - "2222:2222"
     restart: always
     environment:
       NODE_PORT: "2222"
       SECRET_KEY: ${SECRET_KEY}
-  nginx:
-    container_name: nginx
-    image: nginx:1.25-alpine
+
+  remnawave-subscription-page:
+    image: remnawave/subscription-page:latest
+    container_name: remnawave-subscription-page
+    hostname: remnawave-subscription-page
+    volumes:
+      - ./app-config.json:/opt/app/frontend/assets/app-config.json
+    restart: always
+    env_file:
+      - ./env_sub
+    networks:
+      - remnawave-network
+
+  caddy:
+    image: caddy:2.9
+    container_name: caddy
+    hostname: caddy
+    restart: always
     ports:
       - "80:80"
       - "443:443"
+      - "443:443/udp"  # HTTP/3 support
     networks:
-      - node_network
-    restart: always
+      - remnawave-network
     environment:
       DOMAIN: ${DOMAIN}
-      CERT_FULLCHAIN_PATH: ${CERT_FULLCHAIN_PATH}
-      CERT_KEY_PATH: ${CERT_KEY_PATH}
     volumes:
-      - ./etc/nginx/templates:/etc/nginx/templates:ro
-      - ./etc/nginx/conf:/etc/nginx/conf.d
-      - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./var/log/nginx:/var/log/nginx
-      - ${CERT_KEY_PATH}:${CERT_KEY_PATH}
-      - ${CERT_FULLCHAIN_PATH}:${CERT_FULLCHAIN_PATH}
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:
       - remnanode
+      - remnawave-subscription-page
+
 networks:
-  node_network:
+  remnawave-network:
+    name: remnawave-network
     driver: bridge
+
+volumes:
+  caddy-data:
+    driver: local
+    name: caddy-data
+  caddy-config:
+    driver: local
+    name: caddy-config

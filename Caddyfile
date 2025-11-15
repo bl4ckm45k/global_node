@@ -1,0 +1,24 @@
+# Основной домен - проксирование на ноду
+{$DOMAIN} {
+    reverse_proxy remnanode:8001 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+# Поддомен для страницы подписки
+sub.freilassing.ru {
+    reverse_proxy remnawave-subscription-page:3010 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+# Автоматический редирект с HTTP на HTTPS
+http:// {
+    redir https://{host}{uri} permanent
+}

@@ -1,0 +1,22 @@
+services:
+    remnawave-subscription-page:
+        image: remnawave/subscription-page:latest
+        container_name: remnawave-subscription-page
+        hostname: remnawave-subscription-page
+        volumes:
+            - ./app-config.json:/opt/app/frontend/assets/app-config.json
+        restart: always
+        env_file:
+            - .env_sub
+        ports:
+            - '127.0.0.1:3010:3010'
+        networks:
+            - shared-network
+
+networks:
+  remnawave-network:
+      name: remnawave-network
+      driver: bridge
+      external: false
+  shared-network:
+    external: true
