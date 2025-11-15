@@ -1,0 +1,56 @@
+services:
+  remnanode:
+    container_name: remnanode
+    hostname: remnanode
+    image: remnawave/node:latest
+    networks:
+      - remnawave-network
+    ports:
+      - "2222:2222"
+    restart: always
+    environment:
+      NODE_PORT: "2222"
+      SECRET_KEY: ${SECRET_KEY}
+
+  remnawave-subscription-page:
+    image: remnawave/subscription-page:latest
+    container_name: remnawave-subscription-page
+    hostname: remnawave-subscription-page
+    volumes:
+      - ./app-config.json:/opt/app/frontend/assets/app-config.json
+    restart: always
+    env_file:
+      - ./env_sub
+    networks:
+      - remnawave-network
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - remnawave-network
+    restart: always
+    environment:
+      DOMAIN: ${DOMAIN}
+      CERT_FULLCHAIN_PATH: ${CERT_FULLCHAIN_PATH}
+      CERT_KEY_PATH: ${CERT_KEY_PATH}
+    volumes:
+      - ./etc/nginx/templates/default-simple.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./etc/nginx/nginx-simple.conf:/etc/nginx/nginx.conf:ro
+      - ./var/log/nginx:/var/log/nginx
+      - ${CERT_KEY_PATH}:${CERT_KEY_PATH}:ro
+      - ${CERT_FULLCHAIN_PATH}:${CERT_FULLCHAIN_PATH}:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - remnanode
+      - remnawave-subscription-page
+
+networks:
+  remnawave-network:
+    name: remnawave-network
+    driver: bridge
+
