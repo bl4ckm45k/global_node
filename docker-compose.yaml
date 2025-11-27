@@ -7,6 +7,8 @@ services:
       - remnawave-network
     ports:
       - "2222:2222"
+      - "8443:8443"
+      - "442:442"
     restart: always
     environment:
       NODE_PORT: "2222"
