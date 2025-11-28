@@ -38,7 +38,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:
-      - marzban-node
+      - remnanode
     logging:
       driver: "json-file"
       options:
